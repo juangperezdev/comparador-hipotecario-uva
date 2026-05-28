@@ -290,8 +290,11 @@
         +   '<div class="total-row sub"><span>≈ a valor de hoy</span><span>'+fa(totalARShoy)+'</span></div>'
         +   '<div class="total-row sub"><span>≈ en dólares</span><span>'+fu(totalUSDhoy)+'</span></div>'
         +   '<div class="total-row sub"><span>Intereses ('+multiplo.toFixed(2)+'× el capital)</span><span>'+fv(interesUVA)+'</span></div></div>'
-        + '<div class="total nominal"><div class="total-row"><span>Total nominal <small>infl. '+infl+'% · u$s '+deval+'%/mes</small></span><span>'+fa(nominalARS)+' · '+fu(nominalUSD)+'</span></div>'
-        +   '<div class="total-row sub"><span>Última cuota (mes '+n+')</span><span>'+fa(ultimaCuota)+' · '+fu(ultimaCuotaUSD)+'</span></div></div>'
+        + '<div class="total nominal">'
+        +   '<div class="total-row"><span>Total nominal <small>pesos · infl '+infl+'%/mes</small></span><span>'+fa(nominalARS)+'</span></div>'
+        +   '<div class="total-row sub"><span>en dólares <small>u$s '+deval+'%/mes</small></span><span>'+fu(nominalUSD)+'</span></div>'
+        +   '<div class="total-row sub"><span>Última cuota en pesos <small>(mes '+n+')</small></span><span>'+fa(ultimaCuota)+'</span></div>'
+        +   '<div class="total-row sub"><span>en dólares</span><span>'+fu(ultimaCuotaUSD)+'</span></div></div>'
         + checks
         + '</div>';
     });
