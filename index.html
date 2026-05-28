@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparador de créditos hipotecarios UVA — Banco Ciudad vs Banco Nación</title>
+<meta name="description" content="Calculadora para comparar las líneas de crédito hipotecario UVA de Banco Ciudad y Banco Nación: cuota inicial, ingreso requerido y ahorro necesario.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#10503F">
+<meta name="color-scheme" content="light">
+
+<link rel="canonical" href="https://juangperezdev.github.io/comparador-hipotecario-uva/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Comparador de créditos hipotecarios UVA — Banco Ciudad vs Banco Nación">
+<meta property="og:description" content="Compará cuota inicial, ingreso requerido y ahorro necesario en las cuatro líneas UVA vigentes.">
+<meta property="og:url" content="https://juangperezdev.github.io/comparador-hipotecario-uva/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Comparador de créditos hipotecarios UVA — Ciudad vs Nación">
+<meta name="twitter:description" content="Compará cuota inicial, ingreso requerido y ahorro necesario en las cuatro líneas UVA vigentes.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2310503F'/%3E%3Cpath d='M8 21V12l8-5 8 5v9' fill='none' stroke='%23FAF6EE' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M13 21v-5h6v5' fill='none' stroke='%23FAF6EE' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6EE;
+    --paper:#FFFFFF;
+    --ink:#1C1B17;
+    --muted:#6B675C;
+    --faint:#9A968A;
+    --line:#E4DECF;
+    --line-strong:#CFC8B5;
+    --accent:#10503F;
+    --accent-soft:#E3F0E9;
+    --cheap:#0F6E56;
+    --mid:#A9700E;
+    --dear:#B5421F;
+    --good-bg:#EAF3EC;
+    --bad:#B5421F;
+    --shadow:0 1px 2px rgba(28,27,23,.04), 0 8px 30px rgba(28,27,23,.05);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Archivo','Segoe UI',system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.6;
+    font-variant-numeric:tabular-nums;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px) 64px;}
+  header{margin-bottom:40px; border-bottom:1px solid var(--line); padding-bottom:28px;}
+  .kicker{font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 12px;}
+  h1{font-family:'Fraunces','Georgia',serif; font-weight:500; font-size:clamp(30px,5vw,46px); line-height:1.08; margin:0 0 14px; letter-spacing:-.01em;}
+  .sub{font-size:17px; color:var(--muted); max-width:62ch; margin:0;}
+  .updated{font-size:13px; color:var(--faint); margin-top:14px;}
+
+  h2{font-family:'Fraunces',serif; font-weight:500; font-size:24px; margin:0 0 18px; letter-spacing:-.01em;}
+
+  .panel{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:clamp(18px,3vw,28px); box-shadow:var(--shadow); margin-bottom:28px;}
+
+  .grid-in{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:18px 20px;}
+  .field label{display:block; font-size:13px; font-weight:500; color:var(--muted); margin-bottom:6px;}
+  .field .hint{font-weight:400; color:var(--faint);}
+  input[type=number]{
+    width:100%; height:42px; padding:0 12px; font:inherit; font-size:16px;
+    background:var(--bg); border:1px solid var(--line-strong); border-radius:10px; color:var(--ink);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input[type=number]:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+
+  .row-slider{display:flex; align-items:center; gap:16px; margin-top:24px; flex-wrap:wrap;}
+  .row-slider > label{font-size:13px; font-weight:500; color:var(--muted); min-width:46px;}
+  input[type=range]{-webkit-appearance:none; appearance:none; flex:1; min-width:160px; height:5px; border-radius:5px; background:var(--line-strong); cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--accent); border:3px solid var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:18px; height:18px; border:3px solid var(--paper); border-radius:50%; background:var(--accent); cursor:pointer;}
+  .slider-out{font-size:15px; font-weight:600; min-width:64px; color:var(--ink);}
+
+  .toggles{display:flex; flex-wrap:wrap; gap:14px 24px; margin-top:22px; padding-top:20px; border-top:1px solid var(--line);}
+  .toggle{display:flex; align-items:center; gap:9px; font-size:14px; color:var(--ink); cursor:pointer; user-select:none;}
+  .toggle input{width:18px; height:18px; accent-color:var(--accent); cursor:pointer;}
+
+  .summary{display:flex; align-items:center; gap:12px; background:var(--accent-soft); border:1px solid #CDE3D8; border-radius:12px; padding:14px 18px; margin-bottom:24px; font-size:16px;}
+  .summary b{font-weight:600;}
+  .summary .dot{width:10px; height:10px; border-radius:50%; background:var(--cheap); flex:none;}
+
+  .cards{display:flex; flex-direction:column; gap:28px;}
+  .bank-group{}
+  .bank-title{font-family:'Fraunces','Georgia',serif; font-weight:500; font-size:20px; margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid var(--line-strong); color:var(--ink);}
+  .cards-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:20px; box-shadow:var(--shadow); display:flex; flex-direction:column; transition:transform .15s, border-color .15s;}
+  .card.win{border-color:var(--cheap); border-width:2px; padding:19px;}
+  .card.off{opacity:.5;}
+  .card-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:4px;}
+  .card-name{font-weight:600; font-size:15px; line-height:1.25;}
+  .card-rate{font-family:'Fraunces',serif; font-weight:600; font-size:19px; white-space:nowrap;}
+  .badge-win{display:inline-block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; font-weight:600; color:var(--cheap); background:var(--good-bg); border-radius:6px; padding:2px 8px; margin-bottom:10px; align-self:flex-start;}
+  .stat{display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px dashed var(--line); font-size:13px;}
+  .stat:last-of-type{border-bottom:none;}
+  .stat .lbl{color:var(--muted);}
+  .stat .val{font-weight:600; text-align:right;}
+  .stat .val small{font-weight:400; color:var(--faint); display:block; font-size:11px;}
+  .total{margin-top:12px; padding:12px 14px; background:var(--accent-soft); border-radius:12px;}
+  .total-row{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:14px; font-weight:600; color:var(--accent);}
+  .total-row.sub{font-size:12px; font-weight:400; color:var(--accent); opacity:.78; margin-top:4px;}
+  .total-row small{font-weight:400; font-size:11px; opacity:.8;}
+  .total.nominal{margin-top:8px; background:#FBEEDB;}
+  .total.nominal .total-row{color:#7A4F08;}
+  .total.nominal .total-row.sub{color:#7A4F08;}
+  .checks{display:flex; flex-direction:column; gap:5px; margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-size:13px;}
+  .chk{display:flex; align-items:center; gap:7px; font-weight:500;}
+  .chk.ok{color:var(--cheap);} .chk.no{color:var(--bad);}
+  .chk .ic{width:16px; height:16px; flex:none;}
+  .locked{font-size:13px; color:var(--bad); font-weight:500; margin-top:14px; padding-top:12px; border-top:1px solid var(--line); display:flex; align-items:center; gap:7px;}
+
+  .notes{margin-top:40px; border-top:1px solid var(--line); padding-top:28px;}
+  .notes h2{margin-bottom:14px;}
+  .notes ul{margin:0; padding-left:20px; color:var(--muted); font-size:14.5px;}
+  .notes li{margin-bottom:9px;}
+  .notes strong{color:var(--ink); font-weight:600;}
+  footer{margin-top:36px; font-size:12.5px; color:var(--faint); line-height:1.6; border-top:1px solid var(--line); padding-top:20px;}
+
+  @media (max-width:560px){
+    .card-rate{font-size:17px;}
+    .summary{font-size:15px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <noscript>
+    <div style="background:#FBEAE2; border:1px solid #E6B79F; color:#8A3416; border-radius:12px; padding:14px 18px; margin-bottom:24px; font-size:15px;">
+      Esta calculadora necesita JavaScript activado para funcionar. Activalo en tu navegador y recargá la página.
+    </div>
+  </noscript>
+  <header>
+    <p class="kicker">Crédito hipotecario UVA · CABA</p>
+    <h1>Banco Ciudad vs. Banco Nación</h1>
+    <p class="sub">Compará las cuatro líneas vigentes en pesos reales: cuánto te prestan, qué cuota inicial pagás, qué ingreso necesitás demostrar y cuánto ahorro previo te exigen.</p>
+    <p class="updated" id="updated"></p>
+  </header>
+
+  <section class="panel" aria-label="Datos de entrada">
+    <div class="grid-in">
+      <div class="field"><label for="valor">Valor propiedad <span class="hint">(u$s)</span></label><input type="number" id="valor" value="100000" step="1000" min="0"></div>
+      <div class="field"><label for="tc">Tipo de cambio <span class="hint">($/u$s)</span></label><input type="number" id="tc" value="1400" step="10" min="1"></div>
+      <div class="field"><label for="m2">Sup. cubierta <span class="hint">(m²)</span></label><input type="number" id="m2" value="60" step="1" min="1"></div>
+      <div class="field"><label for="ahorro">Ahorro disponible <span class="hint">(u$s)</span></label><input type="number" id="ahorro" value="20000" step="1000" min="0"></div>
+      <div class="field"><label for="ingreso">Ingreso neto familiar <span class="hint">($/mes)</span></label><input type="number" id="ingreso" value="3000000" step="50000" min="0"></div>
+      <div class="field"><label for="uva">Valor UVA <span class="hint">($)</span></label><input type="number" id="uva" value="1958" step="1" min="1"></div>
+      <div class="field"><label for="infl">Inflación mensual <span class="hint">(%)</span></label><input type="number" id="infl" value="2.5" step="0.1" min="0"></div>
+      <div class="field"><label for="deval">Devaluación mensual u$s <span class="hint">(%)</span></label><input type="number" id="deval" value="2.5" step="0.1" min="0"></div>
+    </div>
+    <div class="row-slider">
+      <label for="plazo">Plazo</label>
+      <input type="range" id="plazo" min="5" max="30" value="20" step="1">
+      <span class="slider-out" id="plazo-out">20 años</span>
+    </div>
+    <div class="toggles">
+      <label class="toggle"><input type="checkbox" id="poligono"> Propiedad en polígono Ciudad <span style="color:var(--faint)">(FODUS, La Boca, Lugano…)</span></label>
+      <label class="toggle"><input type="checkbox" id="sectorpub" checked> Empleo en sector público <span style="color:var(--faint)">(habilita BNA 90%)</span></label>
+    </div>
+  </section>
+
+  <div class="summary" id="summary"><span class="dot"></span><span id="summary-text"></span></div>
+
+  <div class="cards" id="cards"></div>
+
+  <section class="notes">
+    <h2>Cómo leer los resultados</h2>
+    <ul>
+      <li><strong>El plazo se ajusta por línea.</strong> Banco Ciudad financia hasta 20 años y BNA hasta 30. Si pedís más de lo que permite una línea, el cálculo usa su máximo y lo aclara.</li>
+      <li><strong>El “% efectivo” financiado.</strong> Cuando aparece un aviso de tope (ej. $150M o 315k UVA), significa que el monto máximo del producto te limitó por debajo del porcentaje teórico, obligándote a poner más ahorro.</li>
+      <li><strong>Primera Vivienda tiene tope de inmueble:</strong> hasta 80 m² cubiertos y un máximo de u$s 2.800 por m². El check valida ambas condiciones.</li>
+      <li><strong>El ingreso requerido</strong> surge de dividir la cuota por 0,25 (relación cuota/ingreso del 25%). Suele ser el verdadero cuello de botella, más que la tasa.</li>
+      <li><strong>El 90% es exclusivo del sector público</strong> en la línea +Hogares Sector Público de BNA. La línea general de ambos bancos financia hasta el 75%.</li>
+      <li><strong>El total a pagar se expresa en UVA</strong> (valor real), no en pesos futuros: como la UVA se ajusta por inflación, el monto en pesos a 20-30 años es imposible de prever. El “≈ a valor de hoy” traduce ese total a la UVA actual, solo como referencia. Acá se ve por qué un plazo más largo abarata la cuota pero encarece el total de intereses.</li>
+      <li><strong>El total nominal proyectado</strong> (bloque ámbar) suma las cuotas en pesos suponiendo que la UVA crece a la inflación mensual cargada. El equivalente en dólares usa la devaluación mensual del dólar también cargada: si la dejás igual a la inflación (paridad), el costo en USD se mantiene cercano al “valor de hoy”; si proyectás un dólar más atrasado, la cuota se vuelve más cara en dólares. Es un escenario, no una certeza: a 20-30 años, pequeños cambios en cualquiera de los dos supuestos cambian el resultado fuerte.</li>
+      <li><strong>Qué no incluye este cálculo:</strong> seguros de incendio y vida (se suman a la cuota), honorarios y, en BNA, el scoring crediticio, que es un filtro aparte.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Estimación orientativa con fines informativos; no constituye asesoramiento financiero ni una oferta de crédito. Las condiciones, tasas y topes de cada banco cambian sin previo aviso: verificá siempre en el simulador oficial de la entidad antes de decidir. Gastos de escrituración estimados en 10% del valor de la propiedad. Amortización por sistema francés sobre tasa real fija más ajuste de capital por UVA.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var lineas = [
+    {key:'lg',   banco:'Banco Ciudad',  nombre:'Línea General',    pct:0.75, topeARS:150e6, maxPlazo:20, m2cap:null, usdM2:null, sp:false},
+    {key:'pv',   banco:'Banco Ciudad',  nombre:'Primera Vivienda', pct:0.75, topeARS:100e6, maxPlazo:20, m2cap:80,   usdM2:2800, sp:false},
+    {key:'bna',  banco:'Banco Nación',  nombre:'+Hogares',         pct:0.75, topeUVA:260000, maxPlazo:30, m2cap:null, usdM2:null, sp:false},
+    {key:'bnasp',banco:'Banco Nación',  nombre:'+Hogares Sector Público', pct:0.90, topeUVA:315000, maxPlazo:30, m2cap:null, usdM2:null, sp:true}
+  ];
+  var $ = function(id){ return document.getElementById(id); };
+  var nf = new Intl.NumberFormat('es-AR');
+  var fa = function(x){ return '$' + nf.format(Math.round(x)); };
+  var fu = function(x){ return 'u$s ' + nf.format(Math.round(x)); };
+  var fv = function(x){ return nf.format(Math.round(x)) + ' UVA'; };
+  var ICON_OK = '<svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3.2L13 4.5"/></svg>';
+  var ICON_NO = '<svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+  var ICON_LOCK = '<svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>';
+
+  function tasaDe(l, poli){
+    if(l.key==='lg') return poli ? 8.5 : 9.5;
+    if(l.key==='pv') return 7.5;
+    return 6;
+  }
+  function colorTasa(t){
+    if(t<=6) return 'var(--cheap)';
+    if(t<=8) return 'var(--mid)';
+    return 'var(--dear)';
+  }
+  function chk(ok, label){
+    return '<span class="chk '+(ok?'ok':'no')+'">'+(ok?ICON_OK:ICON_NO)+label+'</span>';
+  }
+
+  function calc(){
+    var valor=+$('valor').value, tc=+$('tc').value, m2=+$('m2').value,
+        ahorro=+$('ahorro').value, ingreso=+$('ingreso').value,
+        uva=+$('uva').value, plazo=+$('plazo').value,
+        infl=+$('infl').value, deval=+$('deval').value,
+        poli=$('poligono').checked, sp=$('sectorpub').checked;
+    $('plazo-out').textContent = plazo + ' años';
+    var valorARS = valor*tc;
+    var aprobadas = 0, groups = {};
+
+    lineas.forEach(function(l){
+      var disabled = l.sp && !sp;
+      var tasa = tasaDe(l, poli);
+      var plazoL = Math.min(plazo, l.maxPlazo);
+      var n = plazoL*12;
+      var prestARS = valorARS * l.pct, topeMsg = '';
+      if(l.topeARS && prestARS > l.topeARS){ prestARS = l.topeARS; topeMsg = 'tope $'+(l.topeARS/1e6)+'M'; }
+      var prestUVA = uva>0 ? prestARS/uva : 0;
+      if(l.topeUVA && prestUVA > l.topeUVA){ prestUVA = l.topeUVA; prestARS = prestUVA*uva; topeMsg = 'tope '+(l.topeUVA/1000)+'k UVA'; }
+      var pctEf = valorARS>0 ? prestARS/valorARS*100 : 0;
+      var i = tasa/100/12;
+      var f = Math.pow(1+i, n);
+      var cuotaUVA = (f>1) ? prestUVA * (i*f)/(f-1) : 0;
+      var cuotaARS = cuotaUVA*uva;
+      var cuotaUSD = tc>0 ? cuotaARS/tc : 0;
+      var ingReq = cuotaARS/0.25;
+      var anticipoUSD = valor - (tc>0 ? prestARS/tc : 0);
+      var ahorroNec = anticipoUSD + valor*0.10;
+      var totalUVA = cuotaUVA * n;
+      var interesUVA = totalUVA - prestUVA;
+      var totalARShoy = totalUVA * uva;
+      var totalUSDhoy = tc>0 ? totalARShoy/tc : 0;
+      var multiplo = prestUVA>0 ? totalUVA/prestUVA : 0;
+      var g = infl/100;
+      var d = deval/100;
+      var nominalARS = (g>0) ? cuotaUVA*uva*((1+g)*(Math.pow(1+g,n)-1)/g) : totalARShoy;
+      var ultimaCuota = cuotaUVA*uva*Math.pow(1+g,n);
+      var r = (1+g)/(1+d) - 1;
+      var nominalUSD = (Math.abs(r)>1e-9) ? cuotaUSD*((1+r)*(Math.pow(1+r,n)-1)/r) : cuotaUSD*n;
+      var ultimaCuotaUSD = cuotaUSD*Math.pow(1+r,n);
+
+      var ingOK = ingreso>=ingReq, ahoOK = ahorro>=ahorroNec, m2OK = true, m2Msg='';
+      if(l.m2cap){ m2OK = (m2<=l.m2cap) && (m2>0 && valor/m2<=l.usdM2); m2Msg = 'máx '+l.m2cap+' m² · u$s'+nf.format(l.usdM2)+'/m²'; }
+      var califica = !disabled && ingOK && ahoOK && m2OK;
+      if(califica) aprobadas++;
+
+      var cls = 'card' + (califica?' win':'') + (disabled?' off':'');
+      var checks;
+      if(disabled){
+        checks = '<div class="locked">'+ICON_LOCK+'Disponible solo para empleo público</div>';
+      } else {
+        checks = '<div class="checks">'
+          + chk(ingOK, 'Ingreso suficiente')
+          + chk(ahoOK, 'Ahorro suficiente')
+          + (l.m2cap ? chk(m2OK, 'Inmueble apto') : '')
+          + '</div>';
+      }
+
+      groups[l.banco] = (groups[l.banco]||'') + '<div class="'+cls+'">'
+        + (califica ? '<span class="badge-win">Calificás</span>' : '')
+        + '<div class="card-top"><span class="card-name">'+l.nombre+'</span>'
+        +   '<span class="card-rate" style="color:'+colorTasa(tasa)+'">UVA+'+tasa+'%</span></div>'
+        + '<div class="stat"><span class="lbl">Préstamo</span><span class="val">'+fa(prestARS)+'<small>'+Math.round(pctEf)+'% del valor'+(topeMsg?' · '+topeMsg:'')+'</small></span></div>'
+        + '<div class="stat"><span class="lbl">Cuota inicial</span><span class="val">'+fa(cuotaARS)+'<small>'+fu(cuotaUSD)+' · '+fv(cuotaUVA)+' / mes</small></span></div>'
+        + '<div class="stat"><span class="lbl">Ingreso requerido</span><span class="val">'+fa(ingReq)+'</span></div>'
+        + '<div class="stat"><span class="lbl">Ahorro necesario</span><span class="val">'+fu(ahorroNec)+'</span></div>'
+        + '<div class="stat"><span class="lbl">Plazo</span><span class="val">'+plazoL+' años'+(plazoL<plazo?' (máx)':'')+'</span></div>'
+        + '<div class="total"><div class="total-row"><span>Total a pagar</span><span>'+fv(totalUVA)+'</span></div>'
+        +   '<div class="total-row sub"><span>≈ a valor de hoy</span><span>'+fa(totalARShoy)+'</span></div>'
+        +   '<div class="total-row sub"><span>≈ en dólares</span><span>'+fu(totalUSDhoy)+'</span></div>'
+        +   '<div class="total-row sub"><span>Intereses ('+multiplo.toFixed(2)+'× el capital)</span><span>'+fv(interesUVA)+'</span></div></div>'
+        + '<div class="total nominal"><div class="total-row"><span>Total nominal <small>infl. '+infl+'% · u$s '+deval+'%/mes</small></span><span>'+fa(nominalARS)+' · '+fu(nominalUSD)+'</span></div>'
+        +   '<div class="total-row sub"><span>Última cuota (mes '+n+')</span><span>'+fa(ultimaCuota)+' · '+fu(ultimaCuotaUSD)+'</span></div></div>'
+        + checks
+        + '</div>';
+    });
+
+    var orden = ['Banco Ciudad','Banco Nación'];
+    var out = '';
+    orden.forEach(function(b){
+      if(groups[b]){
+        out += '<div class="bank-group"><h3 class="bank-title">'+b+'</h3><div class="cards-row">'+groups[b]+'</div></div>';
+      }
+    });
+    $('cards').innerHTML = out;
+    $('summary-text').innerHTML = 'Con estos datos calificás en <b>'+aprobadas+' de 4</b> líneas.';
+  }
+
+  ['valor','tc','m2','ahorro','ingreso','uva','infl','deval','plazo','poligono','sectorpub'].forEach(function(id){
+    $(id).addEventListener('input', calc);
+  });
+
+  $('updated').textContent = 'Tasas de referencia vigentes a mayo de 2026 · BNA UVA+6% (primera vivienda con haberes) · Ciudad UVA+9,5% / +8,5% polígono / +7,5% Primera Vivienda con subsidio GCBA.';
+  calc();
+})();
+</script>
+</body>
+</html>
