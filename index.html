@@ -179,12 +179,12 @@
       <li><strong>El 90% es exclusivo del sector público</strong> en la línea +Hogares Sector Público de BNA. La línea general de ambos bancos financia hasta el 75%.</li>
       <li><strong>El total a pagar se expresa en UVA</strong> (valor real), no en pesos futuros: como la UVA se ajusta por inflación, el monto en pesos a 20-30 años es imposible de prever. El “≈ a valor de hoy” traduce ese total a la UVA actual, solo como referencia. Acá se ve por qué un plazo más largo abarata la cuota pero encarece el total de intereses.</li>
       <li><strong>El total nominal proyectado</strong> (bloque ámbar) suma las cuotas en pesos suponiendo que la UVA crece a la inflación mensual cargada. El equivalente en dólares usa la devaluación mensual del dólar también cargada: si la dejás igual a la inflación (paridad), el costo en USD se mantiene cercano al “valor de hoy”; si proyectás un dólar más atrasado, la cuota se vuelve más cara en dólares. Es un escenario, no una certeza: a 20-30 años, pequeños cambios en cualquiera de los dos supuestos cambian el resultado fuerte.</li>
-      <li><strong>Qué no incluye este cálculo:</strong> seguros de incendio y vida (se suman a la cuota), honorarios y, en BNA, el scoring crediticio, que es un filtro aparte.</li>
+      <li><strong>Seguros y honorarios (estimados):</strong> el seguro de vida (~0,05%/mes sobre el saldo) y el de incendio (~0,025%/mes sobre el valor) se suman a la cuota en la línea “Cuota con seguros”; los honorarios y gastos (~2% del valor) se incluyen en el ahorro necesario. Son estimaciones referenciales y varían según banco y aseguradora. En BNA, el scoring crediticio es un filtro aparte que este cálculo no contempla.</li>
     </ul>
   </section>
 
   <footer>
-    <p>Estimación orientativa con fines informativos; no constituye asesoramiento financiero ni una oferta de crédito. Las condiciones, tasas y topes de cada banco cambian sin previo aviso: verificá siempre en el simulador oficial de la entidad antes de decidir. Gastos de escrituración estimados en 10% del valor de la propiedad. Amortización por sistema francés sobre tasa real fija más ajuste de capital por UVA.</p>
+    <p>Estimación orientativa con fines informativos; no constituye asesoramiento financiero ni una oferta de crédito. Las condiciones, tasas y topes de cada banco cambian sin previo aviso: verificá siempre en el simulador oficial de la entidad antes de decidir. Gastos de escrituración estimados en 10% del valor de la propiedad, más honorarios estimados en 2%. Seguros estimados: vida ~0,05%/mes sobre el saldo e incendio ~0,025%/mes sobre el valor. Amortización por sistema francés sobre tasa real fija más ajuste de capital por UVA.</p>
   </footer>
 </div>
 
@@ -196,6 +196,10 @@
     {key:'bna',  banco:'Banco Nación',  nombre:'+Hogares',         pct:0.75, topeUVA:260000, maxPlazo:30, m2cap:null, usdM2:null, sp:false},
     {key:'bnasp',banco:'Banco Nación',  nombre:'+Hogares Sector Público', pct:0.90, topeUVA:315000, maxPlazo:30, m2cap:null, usdM2:null, sp:true}
   ];
+  // Estimaciones editables (varían según banco y aseguradora):
+  var SEG_VIDA     = 0.0005;   // seguro de vida: 0,05%/mes sobre el saldo de capital
+  var SEG_INCENDIO = 0.00025;  // seguro de incendio: 0,025%/mes sobre el valor de la propiedad
+  var HONORARIOS   = 0.02;     // honorarios/gastos: 2% del valor, se suman al ahorro necesario
   var $ = function(id){ return document.getElementById(id); };
   var nf = new Intl.NumberFormat('es-AR');
   var fa = function(x){ return '$' + nf.format(Math.round(x)); };
@@ -245,8 +249,12 @@
       var cuotaARS = cuotaUVA*uva;
       var cuotaUSD = tc>0 ? cuotaARS/tc : 0;
       var ingReq = cuotaARS/0.25;
+      var segurosARS = prestARS*SEG_VIDA + valorARS*SEG_INCENDIO;
+      var cuotaConSegARS = cuotaARS + segurosARS;
+      var cuotaConSegUSD = tc>0 ? cuotaConSegARS/tc : 0;
+      var honorariosUSD = valor*HONORARIOS;
       var anticipoUSD = valor - (tc>0 ? prestARS/tc : 0);
-      var ahorroNec = anticipoUSD + valor*0.10;
+      var ahorroNec = anticipoUSD + valor*0.10 + honorariosUSD;
       var totalUVA = cuotaUVA * n;
       var interesUVA = totalUVA - prestUVA;
       var totalARShoy = totalUVA * uva;
@@ -283,8 +291,10 @@
         +   '<span class="card-rate" style="color:'+colorTasa(tasa)+'">UVA+'+tasa+'%</span></div>'
         + '<div class="stat"><span class="lbl">Préstamo</span><span class="val">'+fa(prestARS)+'<small>'+Math.round(pctEf)+'% del valor'+(topeMsg?' · '+topeMsg:'')+'</small></span></div>'
         + '<div class="stat"><span class="lbl">Cuota inicial</span><span class="val">'+fa(cuotaARS)+'<small>'+fu(cuotaUSD)+' · '+fv(cuotaUVA)+' / mes</small></span></div>'
+        + '<div class="stat"><span class="lbl">Seguros <small>vida + incendio</small></span><span class="val">'+fa(segurosARS)+'<small>estimado</small></span></div>'
+        + '<div class="stat"><span class="lbl">Cuota con seguros <small>est.</small></span><span class="val">'+fa(cuotaConSegARS)+'<small>'+fu(cuotaConSegUSD)+' / mes</small></span></div>'
         + '<div class="stat"><span class="lbl">Ingreso requerido</span><span class="val">'+fa(ingReq)+'</span></div>'
-        + '<div class="stat"><span class="lbl">Ahorro necesario</span><span class="val">'+fu(ahorroNec)+'</span></div>'
+        + '<div class="stat"><span class="lbl">Ahorro necesario</span><span class="val">'+fu(ahorroNec)+'<small>incl. ~2% honorarios (est.)</small></span></div>'
         + '<div class="stat"><span class="lbl">Plazo</span><span class="val">'+plazoL+' años'+(plazoL<plazo?' (máx)':'')+'</span></div>'
         + '<div class="total"><div class="total-row"><span>Total a pagar</span><span>'+fv(totalUVA)+'</span></div>'
         +   '<div class="total-row sub"><span>≈ a valor de hoy</span><span>'+fa(totalARShoy)+'</span></div>'
